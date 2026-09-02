@@ -19,14 +19,29 @@ binance-trading-agent/
 └── README.md     # Project documentation
 ```
 ## ⚙️ How to Run Locally
+Option 1: For Git users (Recomended)
 
-1. Clone the repository:
+. Step 1: Clone the repository
    ```bash
    git clone https://github.com/Pangnara/binance-trading-agent.git
-
-2. Navigate into the folder and run the script :
-   ```bash
+```
+. Step 2: navigate to  the project directory
+```bash
    cd binance-trading-agent
-3. Ensure you have Python installed, then executed :
-   ```bash
+```
+. Step 3: Run the script
+```bash
    python main.py
+```
+Option 2: Without Installing Git (Download ZIP)
+
+. Step 1: Click the green Code botton at the top of this repository page, then select Download ZIP.
+
+. Step 2: Extract the ZIP file on your computer.
+
+. Step 3: Open the extracted folder,type 'cmd' in the folder's address bar and then Enter.
+
+. Step 4: Run the command 
+```bash
+python main.py
+```
