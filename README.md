@@ -15,14 +15,12 @@ An autonomous AI trading workflow agent built for the Binance Agent OS Mini Hack
 ## 📂 Project Structure
 `text
 ├── strategies/
-│   └── momentum_signal.py    # Core trading strategy logic
+│ └── momentum_signal.py # Core trading strategy logic
 ├── core/
-│   └── agent_engine.py       # Main Agent OS executor
+│ └── agent_engine.py # Main Agent OS executor
 ├── config/
-│   └── parameters.json       # Risk and threshold configurations
+│ └── parameters.json # Risk and threshold configurations
 └── README.md
-
 git clone https://github.com/Pangnara/binance-trading-agent.git
-
 pip install -r requirements.txt
 python core/agent_engine.py
