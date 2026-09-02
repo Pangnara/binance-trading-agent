@@ -25,7 +25,8 @@ binance-trading-agent/
    git clone https://github.com/Pangnara/binance-trading-agent.git
 
 2. Navigate into the folder and run the script :
-   Ensure you have Python installed, then executed
    ```bash
    cd binance-trading-agent
+3. Ensure you have Python installed, then executed :
+   ```bash
    python main.py
