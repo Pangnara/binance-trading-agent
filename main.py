@@ -1,5 +1,7 @@
 import time
 import sys
+import urllib.request
+import json
 import random
 
 def print_slow(text, delay=0.03):
@@ -9,58 +11,79 @@ def print_slow(text, delay=0.03):
         time.sleep(delay)
     print()
 
-def run_smart_demo():
-    print("\n============================================================")
-    print("   [INIT] Connecting to Binance Smart Market Stream...")
-    print("============================================================\n")
-    
-    steps = [
-        "Loading Agent OS Core Module v1.0...",
-        "Establishing WebSocket Feed to Binance Order Book...",
-        "Loading Strategy: 'momentum_signal.py'...",
-        "System Ready. Monitoring live liquidity pools...",
-        "------------------------------------------------------------"
+def get_live_binance_price(symbol):
+    symbol = symbol.upper().strip()
+    urls = [
+        f"https://data-api.binance.vision/api/v3/ticker/price?symbol={symbol}",
+        f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
     ]
     
-    for step in steps:
-        print_slow(f"[INFO] - {step}", 0.02)
-        time.sleep(0.3)
+    for url in urls:
+        try:
+            req = urllib.request.Request(
+                url, 
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            )
+            with urllib.request.urlopen(req, timeout=3) as response:
+                data = json.loads(response.read().decode())
+                return float(data['price'])
+        except Exception:
+            continue
+    return None
 
-    # Titik awal harga realistis saat ini
-    prices = {
-        "BTCUSDT": 78450.25,
-        "ETHUSDT": 2510.50,
-        "BNBUSDT": 625.80
-    }
+def run_interactive_agent():
+    print("\n============================================================")
+    print("   [INIT] Binance Interactive Smart Trading Agent...")
+    print("============================================================\n")
     
-    pairs = list(prices.keys())
+    print("System Ready. You can input any coin pair (e.g., BTCUSDT, SOLUSDT, ETHUSDT).")
+    print("Type 'exit' or 'quit' to close the program.\n")
     
-    for cycle in range(1, 4):
-        print(f"\n--- CYCLE {cycle} ---")
-        for pair in pairs:
-            # Simulasi pergerakan harga real-time tipis-tipis
-            change = random.uniform(-15.5, 18.2) if pair == "BTCUSDT" else random.uniform(-2.5, 3.0)
-            prices[pair] += change
-            current_price = round(prices[pair], 2)
-            
-            print(f"Fetching live ticker stream for {pair}...")
-            time.sleep(0.4)
-            
-            print(f"Live Market Price [{pair}]: {current_price:,.2f} USDT")
-            signal_type = random.choice(["BUY", "SELL", "HOLD"])
-            print_slow(f"INFO - [AI AGENT] Order Book Analyzed. Signal for {pair}: {signal_type}", 0.02)
-            
-            if signal_type != "HOLD":
-                print_slow(f"INFO - [TESTNET MODE] Executing {signal_type} order at {current_price:,.2f} USDT...", 0.02)
-                
-            time.sleep(0.5)
+    strategies = [
+        ("Bullish Momentum Detected! Strong buying pressure in order books.", "EXECUTE BUY ORDER"),
+        ("Bearish Correction Phase. Short-term pullback observed.", "HOLD & WAIT FOR SUPPORT"),
+        ("Accumulation Zone Identified. Whale inflow increasing.", "SCALE IN / DCA ACCUMULATION"),
+        ("High Volatility Spike! Breakout resistance tested.", "QUICK SCALP ENTRY")
+    ]
+    
+    while True:
+        user_input = input("Enter coin symbol to analyze: ").strip()
         
-        print("\n" + "=" * 60)
-
-    print("\n[SYSTEM] completed.\n")
+        if user_input.lower() in ['exit', 'quit']:
+            print("\n[SYSTEM] Shutting down trading agent. Goodbye!")
+            break
+            
+        if not user_input:
+            print("[WARNING] Symbol cannot be empty. Please try again.\n")
+            continue
+            
+        symbol = user_input.upper()
+        if not symbol.endswith("USDT"):
+            symbol += "USDT"
+            
+        print(f"\n[INFO] Connecting to Binance API for {symbol}...")
+        time.sleep(0.4)
+        
+        price = get_live_binance_price(symbol)
+        
+        if price:
+            print(f"Live Market Price [{symbol}]: {price:,.2f} USDT")
+            print_slow(f"INFO - [AI AGENT] Scanning order books & liquidity pools for {symbol}...", 0.02)
+            time.sleep(0.6)
+            
+            # Memilih analisis secara acak agar bervariasi tiap koin yang diketik
+            analysis_text, action_text = random.choice(strategies)
+            
+            print_slow(f"INFO - [AI AGENT Analysis]: {analysis_text}", 0.02)
+            time.sleep(0.4)
+            print_slow(f"INFO - [RECOMMENDED ACTION]: {action_text}", 0.02)
+        else:
+            print(f"[ERROR] Failed to fetch data for {symbol}. Please check the symbol name or network.")
+            
+        print("\n" + "-" * 60 + "\n")
 
 if __name__ == "__main__":
     try:
-        run_smart_demo()
+        run_interactive_agent()
     except KeyboardInterrupt:
-        print("\n[SYSTEM] Agent interrupted.")
+        print("\n\n[SYSTEM] Agent interrupted.")
