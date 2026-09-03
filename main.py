@@ -1,89 +1,87 @@
 import time
-import sys
-import urllib.request
-import json
-import random
+import requests
 
-def print_slow(text, delay=0.03):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print()
-
-def get_live_binance_price(symbol):
-    symbol = symbol.upper().strip()
+def get_binance_market_data(symbol):
+    # Fallback URLs: api.binance.com and data-api.binance.vision
     urls = [
-        f"https://data-api.binance.vision/api/v3/ticker/price?symbol={symbol}",
-        f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
+        f"https://api.binance.com/api/v3/ticker/24hr?symbol={symbol.upper()}USDT",
+        f"https://data-api.binance.vision/api/v3/ticker/24hr?symbol={symbol.upper()}USDT"
     ]
     
     for url in urls:
         try:
-            req = urllib.request.Request(
-                url, 
-                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-            )
-            with urllib.request.urlopen(req, timeout=3) as response:
-                data = json.loads(response.read().decode())
-                return float(data['price'])
+            response = requests.get(url, timeout=4)
+            if response.status_code == 200:
+                data = response.json()
+                if 'lastPrice' in data:
+                    return {
+                        'price': float(data['lastPrice']),
+                        'price_change_percent': float(data['priceChangePercent']),
+                        'high': float(data['highPrice']),
+                        'low': float(data['lowPrice'])
+                    }
         except Exception:
             continue
+            
     return None
 
-def run_interactive_agent():
-    print("\n============================================================")
-    print("   [INIT] Binance Interactive Smart Trading Agent...")
-    print("============================================================\n")
+def main():
+    print("==================================================")
+    print("   BINANCE AI TRADING AGENT (WITH RISK MGMT)      ")
+    print("==================================================")
     
-    print("System Ready. You can input any coin pair (e.g., BTCUSDT, SOLUSDT, ETHUSDT).")
-    print("Type 'exit' or 'quit' to close the program.\n")
-    
-    strategies = [
-        ("Bullish Momentum Detected! Strong buying pressure in order books.", "EXECUTE BUY ORDER"),
-        ("Bearish Correction Phase. Short-term pullback observed.", "HOLD & WAIT FOR SUPPORT"),
-        ("Accumulation Zone Identified. Whale inflow increasing.", "SCALE IN / DCA ACCUMULATION"),
-        ("High Volatility Spike! Breakout resistance tested.", "QUICK SCALP ENTRY")
-    ]
-    
+    # Loop utama agar agen bisa dipakai terus-menerus
     while True:
-        user_input = input("Enter coin symbol to analyze: ").strip()
+        coin = input("\nEnter the coin to analyze (e.g., BTC, ETH, SOL) or type 'EXIT' to quit: ").strip().upper()
         
-        if user_input.lower() in ['exit', 'quit']:
-            print("\n[SYSTEM] Shutting down trading agent. Goodbye!")
+        if coin == 'EXIT':
+            print("Thank you for using Binance AI Trading Agent. Goodbye!")
             break
             
-        if not user_input:
-            print("[WARNING] Symbol cannot be empty. Please try again.\n")
+        if not coin:
             continue
             
-        symbol = user_input.upper()
-        if not symbol.endswith("USDT"):
-            symbol += "USDT"
-            
-        print(f"\n[INFO] Connecting to Binance API for {symbol}...")
-        time.sleep(0.4)
+        symbol_check = f"{coin}USDT"
         
-        price = get_live_binance_price(symbol)
+        print(f"\n🔍 Connecting to Binance API for {symbol_check}...")
+        market_data = get_binance_market_data(coin)
         
-        if price:
-            print(f"Live Market Price [{symbol}]: {price:,.2f} USDT")
-            print_slow(f"INFO - [AI AGENT] Scanning order books & liquidity pools for {symbol}...", 0.02)
-            time.sleep(0.6)
-            
-            # Memilih analisis secara acak agar bervariasi tiap koin yang diketik
-            analysis_text, action_text = random.choice(strategies)
-            
-            print_slow(f"INFO - [AI AGENT Analysis]: {analysis_text}", 0.02)
-            time.sleep(0.4)
-            print_slow(f"INFO - [RECOMMENDED ACTION]: {action_text}", 0.02)
+        if market_data is None:
+            print(f"❌ Asset {symbol_check} not found or connection failed on all endpoints! Please try again.")
+            continue
+
+        current_price = market_data['price']
+        change_pct = market_data['price_change_percent']
+        
+        print(f"✅ Data fetched successfully!")
+        print(f"--------------------------------------------------")
+        print(f"🪙 Asset        : {symbol_check}")
+        print(f"💵 Live Price   : ${current_price:,.2f}")
+        print(f"📊 24h Change   : {change_pct:+.2f}%")
+        print(f"📈 24h High     : ${market_data['high']:,.2f}")
+        print(f"📉 24h Low      : ${market_data['low']:,.2f}")
+        print(f"--------------------------------------------------")
+
+        # Trend analysis & dynamic TP/SL calculation logic
+        print("🤖 AI Market Analysis:")
+        if change_pct > 0:
+            print("   Status : Bullish / Positive Momentum 🟢")
+            tp1 = current_price * 1.015  # Target +1.5%
+            tp2 = current_price * 1.030  # Target +3.0%
+            sl = current_price * 0.990   # Risk limit -1.0%
         else:
-            print(f"[ERROR] Failed to fetch data for {symbol}. Please check the symbol name or network.")
-            
-        print("\n" + "-" * 60 + "\n")
+            print("   Status : Bearish / Selling Pressure Watch 🔴")
+            tp1 = current_price * 1.010  # Bounce target +1.0%
+            tp2 = current_price * 1.020  # Bounce target +2.0%
+            sl = current_price * 0.985   # Risk limit -1.5%
+
+        print("\n🎯 Recommended Trading Zones & Risk Management:")
+        print(f"   • Entry Area : ${current_price:,.2f} (Market Price)")
+        print(f"   • Take Profit (TP 1) : ${tp1:,.2f} (+1.5%)")
+        print(f"   • Take Profit (TP 2) : ${tp2:,.2f} (+3.0%)")
+        print(f"   • Stop Loss (SL)     : ${sl:,.2f} (-1.0%)")
+        print("==================================================")
+        print("⚠️ Disclaimer: This analysis is automatically generated for simulation purposes.\n")
 
 if __name__ == "__main__":
-    try:
-        run_interactive_agent()
-    except KeyboardInterrupt:
-        print("\n\n[SYSTEM] Agent interrupted.")
+    main()
