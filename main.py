@@ -2,18 +2,25 @@ import time
 import requests
 
 def get_binance_market_data(symbol):
-    # Fallback URLs: api.binance.com and data-api.binance.vision
+    clean_symbol = symbol.strip().upper()
+    
+    # Dual-source fallback endpoints for high reliability
     urls = [
-        f"https://api.binance.com/api/v3/ticker/24hr?symbol={symbol.upper()}USDT",
-        f"https://data-api.binance.vision/api/v3/ticker/24hr?symbol={symbol.upper()}USDT"
+        f"https://api.binance.com/api/v3/ticker/24hr?symbol={clean_symbol}USDT",
+        f"https://data-api.binance.vision/api/v3/ticker/24hr?symbol={clean_symbol}USDT"
     ]
+    
+    # Custom headers to mimic a real browser and prevent bot detection/blocking
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
     
     for url in urls:
         try:
-            response = requests.get(url, timeout=4)
+            response = requests.get(url, headers=headers, timeout=6)
             if response.status_code == 200:
                 data = response.json()
-                if 'lastPrice' in data:
+                if isinstance(data, dict) and 'lastPrice' in data:
                     return {
                         'price': float(data['lastPrice']),
                         'price_change_percent': float(data['priceChangePercent']),
@@ -30,7 +37,7 @@ def main():
     print("   BINANCE AI TRADING AGENT (WITH RISK MGMT)      ")
     print("==================================================")
     
-    # Loop utama agar agen bisa dipakai terus-menerus
+    # Interactive continuous session loop
     while True:
         coin = input("\nEnter the coin to analyze (e.g., BTC, ETH, SOL) or type 'EXIT' to quit: ").strip().upper()
         
@@ -76,7 +83,7 @@ def main():
             sl = current_price * 0.985   # Risk limit -1.5%
 
         print("\n🎯 Recommended Trading Zones & Risk Management:")
-        print(f"   • Entry Area : ${current_price:,.2f} (Market Price)")
+        print(f"   • Entry Area         : ${current_price:,.2f} (Market Price)")
         print(f"   • Take Profit (TP 1) : ${tp1:,.2f} (+1.5%)")
         print(f"   • Take Profit (TP 2) : ${tp2:,.2f} (+3.0%)")
         print(f"   • Stop Loss (SL)     : ${sl:,.2f} (-1.0%)")
