@@ -29,7 +29,11 @@ Option 1: For Git users (Recomended)
 ```bash
    cd binance-trading-agent
 ```
-. Step 3: Run the script
+. Step 3: Install dependencies
+```bash
+pip install requests
+```
+. Step 4: Run the script
 ```bash
    python main.py
 ```
@@ -39,7 +43,10 @@ Option 2: Without Installing Git (Download ZIP)
 
 . Step 2: Extract the ZIP file on your computer.
 
-. Step 3: Open the extracted folder,type 'cmd' in the folder's address bar and then Enter.
+. Step 3: Open the extracted folder,type 'cmd' in the folder's address bar, Enter and then install the library.
+```bash
+pip install requests
+```
 
 . Step 4: Run the command 
 ```bash
