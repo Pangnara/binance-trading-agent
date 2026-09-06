@@ -1,0 +1,13 @@
+{
+  "name": "binance-trading-agent",
+  "version": "1.0.0",
+  "track": "Track A - AI Agent OS",
+  "workflow_category": "Trading Workflows",
+  "description": "An autonomous AI agent built for Binance Agent OS specializing in real-time market signals, automated DCA strategies, and risk-managed trade executions.",
+  "capabilities": [
+    "Market Analysis & Signals",
+    "Automated DCA Strategies",
+    "Risk Management & Execution"
+  ],
+  "entrypoint": "main.py"
+}
