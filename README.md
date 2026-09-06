@@ -35,4 +35,6 @@ binance-trading-agent/
    ```bash
    python main.py
    ```
+4. Enter your desired coin symbols (e.g.,btc,bnb,eth) or press Enter to use default pairs.
+5. Type exit whenever you want to safely terminate the agent session.
    
