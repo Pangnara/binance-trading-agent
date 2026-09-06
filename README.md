@@ -30,11 +30,14 @@ binance-trading-agent/
 
 ### Running the Agent
 1. Clone the repository or download the source code.
-2. Open your terminal in the project directory.
-3. Run the main agent script:
+   ```bash
+   git clone https://github.com/Pangnara/binance-trading-agent.git
+   ```
+3. Open your terminal in the project directory.
+4. Run the main agent script:
    ```bash
    python main.py
    ```
-4. Enter your desired coin symbols (e.g.,btc,bnb,eth) or press Enter to use default pairs.
-5. Type exit whenever you want to safely terminate the agent session.
+5. Enter your desired coin symbols (e.g.,btc,bnb,eth) or press Enter to use default pairs.
+6. Type exit whenever you want to safely terminate the agent session.
    
