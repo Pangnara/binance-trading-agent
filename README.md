@@ -1,54 +1,38 @@
-# Binance Interactive Smart Trading Agent
+# 🤖 Binance Trading Agent (Trading Workflows)
 
-An advanced AI-powered trading agent built for global markets, designed to fetch real-time market data from Binance public APIs and deliver smart momentum insights directly through an interactive terminal interface.
+An autonomous AI trading agent built for the Binance Agent OS ecosystem. This repository demonstrates a robust, interactive trading workflow that connects to real-time market data streams, evaluates technical indicators (RSI), and provides precise risk management levels (Entry, Take Profit, Stop Loss).
 
-## 🚀 Features
-* Real-Time Data Feeds: Automatically connects to Binance public APIs to fetch live market prices.
-* Interactive Terminal Input: Allows users to input any coin pair (e.g., BTC, SOL, ETH) dynamically.
-* AI Momentum Analysis: Generates simulated order book insights, trend directions, and strategic action signals.
+---
 
-## 🛠️ Tech Stack
-* Language: Python
-* Data Source: Binance Public Market APIs
+## 🌟 Key Features
 
-## 📁 Project Structure
+* Live Market Data Integration: Fetches real-time cryptocurrency ticker prices directly from Binance Public APIs with an automatic fallback mechanism (binance.vision) for high availability.
+* Interactive CLI Interface: Allows users to dynamically input custom trading pairs (e.g., BTC, ETH, SOL) or use intelligent defaults.
+* Continuous Monitoring Loop: Features an active session loop so the agent stays online, allowing multi-session analysis and a clean exit command (exit).
+* Advanced AI Decision & Risk Metrics: Automatically calculates and displays technical checks (RSI), AI decisions, optimal entry zones, Take Profit (TP), and Stop Loss (SL) targets based on live prices.
+* Agent OS Compliance: Fully integrated with standard agent manifests (agent-manifest.json) tailored for Track A submission.
+
+---
+
+## 📂 Repository Structure
+
 ```text
 binance-trading-agent/
-│
-├── main.py       # Main interactive AI trading agent script
-└── README.md     # Project documentation
+├── agent-manifest.json    # Agent OS registration and metadata
+├── main.py                # Core agent logic, interactive loop, and live API fetcher
+└── README.md              # Project documentation
 ```
-## ⚙️ How to Run Locally
-Option 1: For Git users (Recomended)
+## 🚀 Quick Start Guide
 
-. Step 1: Clone the repository
+### Prerequisites
+* Python 3.x installed on your system.
+* No external libraries required (uses Python standard libraries: urllib, json, time, sys).
+
+### Running the Agent
+1. Clone the repository or download the source code.
+2. Open your terminal in the project directory.
+3. Run the main agent script:
    ```bash
-   git clone https://github.com/Pangnara/binance-trading-agent.git
-```
-. Step 2: navigate to  the project directory
-```bash
-   cd binance-trading-agent
-```
-. Step 3: Install dependencies
-```bash
-pip install requests
-```
-. Step 4: Run the script
-```bash
    python main.py
-```
-Option 2: Without Installing Git (Download ZIP)
-
-. Step 1: Click the green Code botton at the top of this repository page, then select Download ZIP.
-
-. Step 2: Extract the ZIP file on your computer.
-
-. Step 3: Open the extracted folder,type 'cmd' in the folder's address bar, Enter and then install the library.
-```bash
-pip install requests
-```
-
-. Step 4: Run the command 
-```bash
-python main.py
-```
+   ```
+   
